@@ -89,6 +89,11 @@ select
 from
 	products p ;
 
-select * from employees e ;
+#Indexing
+create index productVendor on
+products(productVendor);
+
+show index from products;
+
 
 
