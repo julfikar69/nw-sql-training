@@ -1,3 +1,21 @@
+#querying data
+select 
+	firstName ,
+	lastName ,
+	email ,
+	jobTitle 
+from employees e ;
+
+#sorting data
+select 
+	firstName ,
+	lastName ,
+	email ,
+	jobTitle 
+from employees e 
+order by firstName ;
+
+#filtering data
 select 
 	firstName ,
 	lastName ,
@@ -8,7 +26,23 @@ where jobTitle = 'Sales Rep'
 order by firstName 
 ;
 
-select c.customerName ,count(*) as orderTotal
+#Join
+select
+	c.customerName ,
+	c.phone ,
+	o.orderDate ,
+	o.shippedDate ,
+	o.status
+from
+	orders o
+inner join customers c 
+on
+	o.customerNumber = c.customerNumber
+order by
+	orderDate desc;
+
+#Agregate
+select c.customerName ,count(*) as orderTotal 
 from orders o 
 inner join customers c 
 on o.customerNumber = c.customerNumber 
