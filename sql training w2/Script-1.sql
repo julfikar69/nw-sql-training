@@ -1,6 +1,8 @@
 set autocommit=0;
 
--- Insert untuk 5 record & commited.
+-- query untukk Melakukan Transaction SQL
+
+-- a. Insert untuk 5 record & commited.
 insert into employees 
 	values
 	('2000','Herviana','Ria','x3809','herviana.ria@mail.com','1','1002','VP Sales'),
@@ -10,11 +12,63 @@ insert into employees
 	('2004','Makaila','Zihan','x9853','zihan.makaila@mail.com','3','1143','Sales Rep');
 	
 commit;
-
 select * from employees e;
 
+-- b. Insert/update/delete di 1 sesi dan read table di sesi yg berbeda.
+
+start transaction;
+
+insert into employees
+values ('2005','Fadilah','Tasya','x9714','fadilah.tasya@mail.com','6','1056','Sales Manager (APAC)');
+
+update employees set lastName = "Firmansyah", firstName = "Muhammad" where employeeNumber = '2002';
+
+delete from employees where employeeNumber = '2004';
+
+commit;
+
+-- c. Rollback ke savepoint.
+
+start transaction;
+
+update employees set extension = 'x666' where employeeNumber > 2000;
+
+savepoint exampleSavepoint;
+
+delete from employees where employeeNumber > 2000;
+
+rollback to savepoint exampleSavepoint;
+
+commit;
 
 
+
+-- query untuk poin soal Eksekusi script sql subquery pada modul training:
+
+-- a. SELECT statement
+select * from employees e where officeCode = (select officeCode from offices o where o.city = "Tokyo");
+
+-- b. INSERT statement
+insert into employees_tokyo select * from employees e where officeCode = (select officeCode from offices o where o.city = "Tokyo");
+
+-- c. UPDATE statement
+update customers c set c.creditLimit = c.creditLimit * 0.15 where c.customerNumber in (select customerNumber from payments p group by customerNumber having count(customerNumber) > 5);
+
+-- d. DELETE statement
+delete from employees_backup where officeCode in (select officeCode from offices o where o.city = "Tokyo");
+
+-- f. Query dari Subquery sebagai source data
+select firstname from (select * from employees where employeeNumber not in (select reportsTo from employees)) as managers;
+
+-- g. Combine query UNION
+select employeeNumber, firstName, jobTitle from employees where officeCode in (select officeCode from offices where city = 'Tokyo')
+union
+select employeeNumber, firstName, jobTitle from employees where officeCode in (select officeCode from offices where city = 'London');
+
+-- h. Combine query INTERSECT
+select products.productLine
+from products
+where products.productLine in (select productLine from productlines);
 
 -- GOCAR
 
